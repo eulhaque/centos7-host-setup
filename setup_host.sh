@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source "./commons.sh"
 source "./nginx_config.sh"
 source "./fail2ban_config.sh"
 
@@ -154,8 +155,34 @@ function setup_ssl {
 
 }
 
-install_python
-install_nginx $1 $2
-setup_firewall
-setup_fail2ban
-setup_ssl $1
+if ask "Do you want to install python";then
+    install_python
+else
+    echo "You have skipped to install python"
+fi
+
+if ask "Do you want to install nginx";then
+    install_nginx $1 $2
+else
+    echo "You have skipped nginx installation"
+fi
+
+if ask "Do you want to setup firewalld for security";then
+    setup_firewall
+else
+    echo "WARNING!!!! You have skipped firewalld settings"
+fi
+
+if ask "Do you want to setup extra security for your nginx/ssh";then
+    setup_fail2ban
+else
+    echo "WARNING!!!! You have skipped to set extra security using fail2ban."
+fi
+
+if ask "Do you want to configure SSL using Let's Encrypt";then
+    setup_ssl $1
+else
+    echo "WARNING!!!! You have skipped SSL configuration"
+fi
+
+echo "Your server has been setup and is ready to use. Enjoy!"
